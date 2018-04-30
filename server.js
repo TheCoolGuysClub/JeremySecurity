@@ -5,7 +5,6 @@ const exphbs = require('express-handlebars');
 
 const usersRoute = require('./routes/users.js');
 const mongoose = require('./db/mongoose.js');
-const User = require('./models/user.js');
 
 const port = process.env.PORT || 3000;
 
@@ -20,6 +19,11 @@ app.set('view engine', 'hbs');
 app.get('/', (req, res) => {
   res.render('index');
 })
+
+
+//middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // Mount Routes
 app.use('/users', usersRoute);
