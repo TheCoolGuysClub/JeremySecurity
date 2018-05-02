@@ -2,8 +2,9 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
+const morgan = require('morgan');
 
-const usersRoute = require('./routes/users.js');
+const authRoute = require('./routes/users.js');
 const mongoose = require('./db/mongoose.js');
 
 const port = process.env.PORT || 3000;
@@ -22,11 +23,11 @@ app.get('/', (req, res) => {
 
 
 //middleware
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(morgan('dev'));
 
 // Mount Routes
-app.use('/users', usersRoute);
+app.use('/', authRoute);
 
 app.listen(port, () => {
   console.log(`Web server up on port ${port}`);
