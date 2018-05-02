@@ -19,6 +19,20 @@ const userSchema = mongoose.Schema({
   }
 })
 
+userSchema.pre('save', function(next) {
+  const user = this;
+  if(user.isModified('password')) {
+    bcrypt.hash(user.password, 10)
+      .then(hashedPassword => {
+        user.password = hashedPassword;
+        next();
+      }).catch(e => {
+        console.log(`User ${user} failed to hashPassword`, e);
+        next();
+      })
+  }
+})
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
