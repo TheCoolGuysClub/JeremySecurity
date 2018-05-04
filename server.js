@@ -3,6 +3,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const morgan = require('morgan');
+const session = require('express-session');
+const flash = require('connect-flash');
+require('dotenv').config();
 
 const authRoute = require('./routes/users.js');
 const mongoose = require('./db/mongoose.js');
@@ -23,12 +26,23 @@ app.get('/', (req, res) => {
 
 
 //middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {secure: false}
+}))
+app.use(flash());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
+app.use((req, res, next) => {
+  res.locals.errorMessages = req.flash('errorMessages');
+  next();
+})
 
 // Mount Routes
 app.use('/', authRoute);
 
 app.listen(port, () => {
   console.log(`Web server up on port ${port}`);
-} )
+})

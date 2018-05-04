@@ -5,6 +5,9 @@
     <title></title>
   </head>
   <body>
+    {{#each errorMessages}}
+      <p style="color: red">{{message}}</p>
+    {{/each}}
     <!-- <h1>Main Layout</h1> -->
     {{{body}}}
     <!-- <footer>My Footer</footer> -->
