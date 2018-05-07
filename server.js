@@ -37,6 +37,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
 app.use((req, res, next) => {
   res.locals.errorMessages = req.flash('errorMessages');
+  res.locals.successMessage = req.flash('sucessMessage');
   next();
 })
 

@@ -40,6 +40,7 @@ users.post('/register', [
     const user = new User(userData);
     user.save()
       .then(user => {
+        req.flash('sucessMessage', {message: "sign up succuessful"});
         res.redirect('home');
       }).catch(e => {
         res.redirect('/register');
