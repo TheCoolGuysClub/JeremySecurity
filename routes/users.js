@@ -43,6 +43,9 @@ users.post('/register', [
         req.flash('sucessMessage', {message: "sign up succuessful"});
         res.redirect('home');
       }).catch(e => {
+        if(e.code === 11000) {
+          req.flash('errorMessages',{message: "Duplicate Email!!!"} );
+        }
         res.redirect('/register');
       })
 
