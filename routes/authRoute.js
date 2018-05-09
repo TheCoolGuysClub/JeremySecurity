@@ -2,6 +2,8 @@ const express = require('express');
 const authRoute = express.Router();
 const {body, validationResult} = require('express-validator/check');
 const {matchedData } = require('express-validator/filter');
+const bcrypt = require('bcryptjs');
+
 
 //local
 const User = require('../models/user.js');
@@ -56,8 +58,26 @@ authRoute.get('/login', (req, res) => {
 })
 
 authRoute.post('/login', (req, res) => {
-  console.log('POST LOGIN ROUTE HIGH!!!!');
-  res.redirect('home');
+  User.findOne({email: req.body.email})
+    .then(user => {
+      if(!user) {
+        req.flash('errorMessages', {message: 'This email does not exist.'});
+        res.redirect('/login');
+      } else {
+        bcrypt.compare(req.body.password, user.password)
+          .then(passwordIsValid => {
+            req.session.userId = user.id;
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      }
+    })
+    .catch(e => {
+      req.flash('errorMessages', {message: 'This email does not exist.'});
+      res.redirect('/login');
+    })
+
 })
 
 
