@@ -7,7 +7,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv').config();
 
-const authRoute = require('./routes/users.js');
+const authRoute = require('./routes/authRoute.js');
 const mongoose = require('./db/mongoose.js');
 
 const port = process.env.PORT || 3000;
