@@ -1,18 +1,20 @@
+//downloaded from internet
 const express = require('express');
 const authRoute = express.Router();
 const {body, validationResult} = require('express-validator/check');
 const {matchedData } = require('express-validator/filter');
 const bcrypt = require('bcryptjs');
 
-
-//local
+//local exports
 const User = require('../models/user.js');
+const {validateUser} = require('../middleware/middleware.js')
 
 authRoute.get('/register', (req, res) => {
   res.render('register');
 })
 
-authRoute.get('/home', (req, res) => {
+authRoute.get('/home', validateUser, (req, res) => {
+  console.log('userId:', req.session.userId);
   res.render('home');
 })
 
@@ -66,7 +68,16 @@ authRoute.post('/login', (req, res) => {
       } else {
         bcrypt.compare(req.body.password, user.password)
           .then(passwordIsValid => {
-            req.session.userId = user.id;
+            if (passwordIsValid) {
+              req.session.userId = user._id;
+              console.log('userID in session:', user._id);
+              req.flash('sucessMessage', {message: "login succuessful"});
+              res.redirect('/home');
+            } else {
+              req.flash('errorMessages', {message: 'Invalid password'});
+              res.redirect('/login');
+            }
+
           })
           .catch(e => {
             console.log(e);
@@ -77,9 +88,12 @@ authRoute.post('/login', (req, res) => {
       req.flash('errorMessages', {message: 'This email does not exist.'});
       res.redirect('/login');
     })
-
 })
 
+authRoute.post('/logout', (req, res) => {
+  req.session.userId = undefined;
+  res.redirect('/login');
+})
 
 
 module.exports = authRoute;
