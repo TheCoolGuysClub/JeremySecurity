@@ -9,8 +9,8 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user.js');
 const {validateUser} = require('../middleware/middleware.js')
 
-authRoute.get('/register', (req, res) => {
-  res.render('register');
+authRoute.get('/sign-up', (req, res) => {
+  res.render('sign-up');
 })
 
 authRoute.get('/home', validateUser, (req, res) => {
@@ -18,7 +18,7 @@ authRoute.get('/home', validateUser, (req, res) => {
   res.render('home');
 })
 
-authRoute.post('/register', [
+authRoute.post('/sign-up', [
   body('email')
     .isEmail()
     .withMessage("invalid email adress"),
@@ -38,7 +38,7 @@ authRoute.post('/register', [
       // console.log('Mapped errors:', errorMessages);
 
       req.flash('errorMessages', errorMessages)
-      return res.redirect('/register');
+      return res.redirect('/sign-up');
     }
     const userData = matchedData(req);
     const user = new User(userData);
@@ -50,7 +50,7 @@ authRoute.post('/register', [
         if(e.code === 11000) {
           req.flash('errorMessages',{message: "Duplicate Email!!!"} );
         }
-        res.redirect('/register');
+        res.redirect('/sign-up');
       })
 
 })
